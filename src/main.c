@@ -35,12 +35,12 @@ struct k_work_q sensor_wq;
 
 void bpm280_task(struct k_timer *timer_id)
 {
-	k_work_submit(&sensor_wq, &bmp280_work_item);
+	k_work_submit_to_queue(&sensor_wq, &bmp280_work_item);
 }
 
 void mpu6050_task(struct k_timer *timer_id)
 {
-	k_work_submit(&sensor_wq, &mpu6050_work_item);
+	k_work_submit_to_queue(&sensor_wq, &mpu6050_work_item);
 }
 
 void bmp280_work(struct k_work *work)
@@ -54,7 +54,7 @@ void bmp280_work(struct k_work *work)
 void mpu6050_work(struct k_work *work)
 {
 	k_mutex_lock(&i2c_mutex, K_FOREVER);
-	MPU6050 data = mpu6050_read_data();
+	MPU6050 data = mpu6050_read_all();
 	k_mutex_unlock(&i2c_mutex);
 	k_msgq_put(&mpu6050_queue, &data, K_NO_WAIT);
 }
