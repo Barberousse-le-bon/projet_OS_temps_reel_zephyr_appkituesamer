@@ -2,7 +2,7 @@
 #define GLOBAL_VARIABLES_H
 
 #include "zephyr/drivers/i2c.h"
-
+// toutes les addresses des capteurs et registres de données de chaque valeur nécessaire
 
 #define BMP280_ADDR 0x76
 #define MPU6050_ADDR 0x68
@@ -24,7 +24,7 @@
 #define SSD1306_COL_OFFSET 2
 
 static const struct device *bus = DEVICE_DT_GET(DT_NODELABEL(i2c1));
-
+// structure pour sticker les données du mpu6050
 typedef struct Accelerometer // En m/s
 {
 	float x, y, z;

@@ -1,6 +1,9 @@
 #ifndef Font5x8
 #define Font5x8
+/*
+font straight from the arduino library ssd1306 from Volodymyr Kumpan
 
+*/
 static const uint8_t font5x8[95][5] = {
   { 0x00, 0x00, 0x00, 0x00, 0x00 },  // ' '
   { 0x00, 0x00, 0x5F, 0x00, 0x00 },  // '!'

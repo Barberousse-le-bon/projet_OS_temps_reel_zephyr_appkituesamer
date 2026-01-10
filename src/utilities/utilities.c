@@ -2,7 +2,7 @@
 
 
 
-
+// fonction pour chercher les capteurs i2c 
 int scan_device_i2c(void)
 {
 	int i = 0x03;
@@ -17,7 +17,7 @@ int scan_device_i2c(void)
 }
 
 
-
+// apple des focntions pour initialiser l'écran avec le contenu fixe
 void init_OLED(void)
 {
 
@@ -37,7 +37,7 @@ void init_OLED(void)
 
 }
 
-
+// afficher la température
 void display_temp(int temp)
 {
     char str_temp[10];
@@ -46,7 +46,7 @@ void display_temp(int temp)
     ssd1306_draw_string(50, 15, str_temp);
     ssd1306_update();
 }
-
+// afficher l'accéleration
 void display_accel(int x, int y, int z)
 {
 	int int_x = x/100; 
@@ -71,7 +71,7 @@ void display_accel(int x, int y, int z)
     ssd1306_update();
 
 }
-
+// afficher les données gyro
 void display_gyro(int x, int y, int z)
 {
 	int int_x = x/100; 
@@ -97,7 +97,8 @@ void display_gyro(int x, int y, int z)
 
 }
 
-
+// fonction de test pour tester l'affichage 
+// NOTE : toutes les données sont en int parce que nous n'avons pas réussi à utiliser les float sans avoir des données incohérentes 
 void display_dummy_data(void)
 {
 
@@ -106,6 +107,7 @@ void display_dummy_data(void)
 	display_gyro(4566, 5677,6788);
 
 }
+// affichage des "vraies" données 
 void display_data(int temp, struct MPU6050 mpu_data)
 {
 

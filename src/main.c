@@ -42,6 +42,12 @@ void mpu6050_task(struct k_timer *timer_id)
 {
 	k_work_submit_to_queue(&sensor_wq, &mpu6050_work_item);
 }
+	//initialisation des variables et quelques lectures de test
+	uint8_t reg = 0x75; 
+	uint8_t data[3];
+	scan_device_i2c();
+	
+	mpu6050_init();
 
 void bmp280_work(struct k_work *work)
 {
@@ -77,6 +83,10 @@ void display_task()
 int main(void)
 {
 	scan_device_i2c();
+	printk("BMP280 Temperature raw data: %d\n", temp);
+
+	MPU6050 mpu6050 = mpu6050_read_all();
+
 	
 	mpu6050_init();
 	init_OLED();
@@ -100,6 +110,11 @@ int main(void)
 	{
 		display_task();
 		k_sleep(K_MSEC(1000));
+	// fonction while qui lit les capteurs et les affiche en boucle
+	while(1){
+		int temp = bmp280_read_temp();
+		MPU6050 mpu6050 = mpu6050_read_all();
+		display_data(temp, mpu6050);
 	}
 
 	return 0;
