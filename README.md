@@ -15,7 +15,7 @@ The goal of the project is to display the value of a temperature sensor and and 
 
 For now the code version of the master branch is a version tha does not work in "real time" terms, it is a simple sequential code to test the functionning of each part and works like a charm.
 
-The version on the task branch does not work yet.
+The version on the task branch work using mutex.
 
 ## Additionnal note
 
