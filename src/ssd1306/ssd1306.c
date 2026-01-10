@@ -4,7 +4,7 @@
 
 uint8_t ssd1306_buffer[SSD1306_WIDTH * SSD1306_HEIGHT / 8];
 
-
+// envoi d'une commande à l'écran
 void ssd1306_cmd(uint8_t cmd)
 {
     uint8_t buf[2];
@@ -14,7 +14,7 @@ void ssd1306_cmd(uint8_t cmd)
     i2c_write(bus, buf, 2, SSD1306_ADDR);
 }
 
-
+// envoi de plusieurs commandes d'affilé à l'écran
 void ssd1306_cmds(uint8_t *cmds, uint16_t size)
 {
     uint8_t buf[size + 1];
@@ -24,7 +24,7 @@ void ssd1306_cmds(uint8_t *cmds, uint16_t size)
 
 }
 
-
+// initialisation de l'éran 
 void ssd1306_init(void)
 {
     HAL_Delay(100); // Laisser le temps à l'écran de démarrer
@@ -61,7 +61,7 @@ void ssd1306_init(void)
     ssd1306_cmds(init_cmds, sizeof(init_cmds));
 }
 
-
+// éteindre tout les pixels de l'écran
 void ssd1306_clear(void)
 {
     uint8_t zero[128];
@@ -80,6 +80,7 @@ void ssd1306_clear(void)
 
     }
 }
+// dessiner un pixel aux coordonnées x, y de la couleur color (0 noir, 1 blanc)
 void ssd1306_pixel(uint8_t x, uint8_t y, uint8_t color)
 {
     if (x >= SSD1306_WIDTH || y >= SSD1306_HEIGHT)
@@ -94,7 +95,7 @@ void ssd1306_pixel(uint8_t x, uint8_t y, uint8_t color)
         ssd1306_buffer[index] &= ~bit;  // pixel OFF
 }
 
-
+// une fois tout les piexels dessinés, on affiche 
 void ssd1306_update(void)
 {
     for (uint8_t page = 0; page < 8; page++)
@@ -111,12 +112,12 @@ void ssd1306_update(void)
 
     }
 }
-
+//clear le buffer d'envoi à l'écran
 void ssd1306_clear_buffer(void)
 {
     memset(ssd1306_buffer, 0x00, sizeof(ssd1306_buffer));
 }
-
+//écrire un char grâce à la font 
 void ssd1306_draw_char(uint8_t x, uint8_t y, char c)
 {
     if (c < 32 || c > 126)
@@ -141,7 +142,7 @@ void ssd1306_draw_char(uint8_t x, uint8_t y, char c)
     for (uint8_t row = 0; row < 8; row++)
         ssd1306_pixel(x + 5, y + row, 0);
 }
-
+// écrire plusieurs caractères 
 void ssd1306_draw_string(uint8_t x, uint8_t y, const char *str)
 {
     while (*str)
