@@ -1,9 +1,9 @@
+#ifndef ssd1306
+#define ssd1306
+
 #include "../global_variables.h"
 #include "font5x8.h"
 
-
-#ifndef ssd1306
-#define ssd1306
 
 void ssd1306_cmd(uint8_t cmd);
 void ssd1306_cmds(uint8_t *cmds, uint16_t size);
