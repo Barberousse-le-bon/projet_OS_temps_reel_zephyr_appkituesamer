@@ -1,10 +1,10 @@
+#ifndef utilities
+#define utilities
+
 #include "../global_variables.h"
 #include "../mpu6050/mpu6050.h"
 #include "../bmp280/bmp280.h"
 #include "../ssd1306/ssd1306.h"
-
-#ifndef utilities
-#define utilities
 
 int scan_device_i2c(void);
 void init_OLED(void);

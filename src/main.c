@@ -8,42 +8,57 @@
 #include "bmp280/bmp280.h"
 #include "utilities/utilities.h"
 
+void bpm280_task(struct k_timer *timer_id);
+void mpu6050_task(struct k_timer *timer_id);
+void display_task(struct k_timer *timer_id);
+
+K_TIMER_DEFINE(bpm280_timer, bpm280_task, NULL);
+K_TIMER_DEFINE(mpu6050_timer, mpu6050_task, NULL);
+K_TIMER_DEFINE(display_timer, display_task, NULL);
+
+K_MSGQ_DEFINE(bpm280_queue, sizeof(int), 1, 1);
+K_MSGQ_DEFINE(mpu6050_queue, sizeof(MPU6050), 1, 1);
+
+
+void bpm280_task(struct k_timer *timer_id)
+{
+	int temp = bmp280_read_temp();
+	k_msgq_put(&bpm280_queue, &temp, K_NO_WAIT);
+}
+
+void mpu6050_task(struct k_timer *timer_id)
+{
+	MPU6050 data = mpu6050_read_data();
+	k_msgq_put(&mpu6050_queue, &data, K_NO_WAIT);
+}
+
+void display_task(struct k_timer *timer_id)
+{
+	int temp;
+	MPU6050 mpu_data;
+
+	k_msgq_get(&bpm280_queue, &temp, K_FOREVER);
+	k_msgq_get(&mpu6050_queue, &mpu_data, K_FOREVER);
+
+	display_data(temp, mpu_data);
+}
 
 
 int main(void)
 {
-	uint8_t reg = 0x75; 
-	uint8_t data[3];
 	scan_device_i2c();
 	
 	mpu6050_init();
-
-	int temp = bmp280_read_temp();
-	printk("BMP280 Temperature raw data: %d\n", temp);
-	
-	//Gyro gyro = mpu6050_read_gyro_all();
-	//float x = mpu6050_read_gyro(MPU6050_GYRO_X);
-	// printk("%d\n", (int)x);
-	//printk("MPU6050 Gyro X,Y,Z: (%.2f, %.2f, %.2f)\n", gyro.x, gyro.y, gyro.z);
-
-	// Print des float ne marchent pas ???
-
-	
-	MPU6050 mpu6050 = mpu6050_read_all();
-	//printk("MPU6050: ACCEL (%d m/s, %d m/s, %d m/s)", (int) mpu6050.accel.x, (int) mpu6050.accel.y, (int) mpu6050.accel.z);
-
-
-	//read_sensor(MPU6050_ADDR, reg, data, 1);
-	//printk("MPU6050 WHO_AM_I register: 0x%02x\n", data[0]);
-	
 	init_OLED();
-	display_data(temp, mpu6050);
+
+	k_timer_start(&bpm280_timer, K_MSEC(0), K_MSEC(100));
+	k_timer_start(&mpu6050_timer, K_MSEC(0), K_MSEC(100));
+	k_timer_start(&display_timer, K_MSEC(0), K_MSEC(1000));
 
 
-	while(1){
-		int temp = bmp280_read_temp();
-		MPU6050 mpu6050 = mpu6050_read_all();
-		display_data(temp, mpu6050);
+	while(1)
+	{
+		k_sleep(K_MSEC(1000));
 	}
 
 	return 0;
