@@ -83,7 +83,6 @@ void display_task()
 int main(void)
 {
 	scan_device_i2c();
-	printk("BMP280 Temperature raw data: %d\n", temp);
 
 	MPU6050 mpu6050 = mpu6050_read_all();
 
